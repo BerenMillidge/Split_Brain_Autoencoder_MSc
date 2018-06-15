@@ -73,6 +73,45 @@ def print_dirs_files(rootdir):
 		print files
 		print "  "
 
+def combine_file_in_directory(crop_size = default_size,verbose=False, mode='RGB', save=True, save_dir='./', make_dir_name = None):
+	rootdir ='./'
+	for subdir, dirs, files in os.walk('./'):
+		for file in files:
+			filename = os.path.basename(file)
+			if '.py' not in filename and '.pyc' not in filename:
+				if verbose:
+					print "combined: " + str(rootdir+'/'+filename)
+				arr = load(rootdir + '/' + filename)
+				img_type = filename.split('_')[-1]
+				if img_type == 'images':
+					img_arr.append(arr)
+					if verbose:
+						print "added to images"
+				if img_type == 'output':
+					out_arr.append(arr)
+					if verbose:
+						print "added to outputs"
+		img_arr = np.concatenate(img_arr)
+		out_arr = np.concatenate(out_arr)
+
+		#img_arr = np.array(img_arr)
+		#out_arr = np.array(out_arr)
+		#print img_arr.shape	
+		#print out_arr.shape
+		if verbose:
+			print "images shape" + str(img_arr.shape)
+			print "outputs shape" + str(out_arr.shape)
+		if save:
+			if make_dir_name == '':
+				save_array(img_arr, rootdir + 'images_'+ add_name)
+				save_array(out_arr, rootdir + 'ouputs_'+ add_name)
+			
+			if make_dir_name !='':
+				save_array(img_arr, rootdir + make_dir_name + '/' + 'images_' + add_name)
+				save_array(out_arr, rootdir + make_dir_name + '/' + 'outputs_' + add_name)
+		return img_arr, out_arr
+
+
 
 def save_images_per_directory(rootdir, crop_size = default_size, mode='RGB', save=True, save_dir='./', make_dir_name = None): 
 	if make_dir_name is not None:
@@ -164,6 +203,11 @@ def combine_arrays_into_one(rootdir, save=True, add_name="combined", make_dir_na
 						print "added to outputs"
 		img_arr = np.concatenate(img_arr)
 		out_arr = np.concatenate(out_arr)
+
+		#img_arr = np.array(img_arr)
+		#out_arr = np.array(out_arr)
+		#print img_arr.shape	
+		#print out_arr.shape
 		if verbose:
 			print "images shape" + str(img_arr.shape)
 			print "outputs shape" + str(out_arr.shape)
@@ -222,7 +266,8 @@ def main():
 
 	save_images_per_directory(dirname, crop_size = crop_size, mode=mode, save=True, save_dir=save_name, make_dir_name = None)
 	#combine saved iamges
-	combine_arrays_into_one('./', add_name='combined', make_dir_name='', verbose=True)
+	combine_arrays_into_one('', add_name='combined', make_dir_name='', verbose=True)
+	#combine_file_in_directory()
 
 
 if __name__ == '__main__':
