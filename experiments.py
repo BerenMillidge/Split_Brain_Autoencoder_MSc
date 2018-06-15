@@ -665,7 +665,7 @@ def main():
 	if len(sys.argv)>=3:
 		save_name = sys.argv[2]
 	if len(sys.argv)>=4:
-		epochs = sys.argv[3]
+		epochs = int(sys.argv[3])
 	if len(sys.argv) <=1:
 		raise ValueError('Need to input a filename for the data when running the model')
 
